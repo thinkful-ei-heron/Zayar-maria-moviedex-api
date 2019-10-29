@@ -27,11 +27,11 @@ app.get('/movie', (req, res) => {
   let filteredResults = movieData
 
   if (req.query.genre) {
-    filteredResults = filteredResults.filter(movie => movie.genre.toLowerCase() === req.query.genre.toLowerCase())
+    filteredResults = filteredResults.filter(movie => movie.genre.toLowerCase().indexOf(req.query.genre.toLowerCase()) !== -1)
   }
 
   if (req.query.country) {
-    filteredResults = filteredResults.filter(movie => movie.country.toLowerCase() === req.query.country.toLowerCase())
+    filteredResults = filteredResults.filter(movie => movie.country.toLowerCase().indexOf(req.query.country.toLowerCase()) !== -1)
   }
 
   if (req.query.avg_vote) {
