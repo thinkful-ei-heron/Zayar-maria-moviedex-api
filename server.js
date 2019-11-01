@@ -7,7 +7,8 @@ const movieData = require('./moviesData.json')
 const app = express()
 const SECRET_API_KEY = process.env.SECRET_API_KEY
 
-app.use(morgan('common'))
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
+app.use(morgan(morganSetting))
 app.use(cors())
 
 app.use(handleAuth)
@@ -41,10 +42,18 @@ app.get('/movie', (req, res) => {
   return res.status(200).json(filteredResults)
 })
 
-app.listen(8000, () => {
-  console.log('Server running')
+app.use((error, req, res, next) => {
+  let response
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error' }}
+  } else {
+    response = { error }
+  }
+  res.status(500).json(response)
 })
 
-// HTTP GET /movie 1.1 
-// Headers: {Authorization: Bearer 1234567}
-// Body:
+const PORT = process.env.PORT || 8000
+
+app.listen(PORT, () => {
+  console.log('Server running')
+})
